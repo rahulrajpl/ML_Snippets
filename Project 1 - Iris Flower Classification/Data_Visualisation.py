@@ -17,6 +17,7 @@ url = "/home/parvathy/PycharmProjects/ML_Snippets/Project 1 - Iris Flower Classi
 names = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class']
 dataset = pandas.read_csv(url, names=names)
 
-#box and whisker plots
+# box and whisker plots
+# This is an unvariate plot, means plots of each individual variable
 dataset.plot(kind='box', subplots=True, layout=(2,2), sharex=False, sharey=False)
 plt.show()

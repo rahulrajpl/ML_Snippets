@@ -21,3 +21,13 @@ dataset = pandas.read_csv(url, names=names)
 # This is an unvariate plot, means plots of each individual variable
 dataset.plot(kind='box', subplots=True, layout=(2,2), sharex=False, sharey=False)
 plt.show()
+
+# We can also create a histogram of each input variable to get an idea of the distribution.
+dataset.hist()
+plt.show()
+
+# Now we can look at the interactions between the variables.
+# First, let’s look at scatterplots of all pairs of attributes. This can be helpful to spot structured relationships between input variables.
+# scatter plot matrix
+scatter_matrix(dataset)
+plt.show()

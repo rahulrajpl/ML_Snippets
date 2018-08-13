@@ -1,6 +1,4 @@
-import csv
-with open("winemag-data_first150k.csv", 'r', encoding='latin-1') as f:
-    wines = list(csv.reader(f))
+
 
 # Calculating the central tendency
 # Method 1 - Arithmetic Mean

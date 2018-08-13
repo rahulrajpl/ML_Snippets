@@ -9,6 +9,6 @@ print('matplotlib: {}'.format(matplotlib.__version__))
 # pandas
 import pandas
 print('pandas: {}'.format(pandas.__version__))
-# scikit-learn
+# scikit-learnn
 import sklearn
 print('sklearn: {}'.format(sklearn.__version__))

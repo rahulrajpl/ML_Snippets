@@ -24,10 +24,7 @@ def calculate_entropy_and_IG(root_h, feature):
     h_f = []
     for f in set(feature):
         p = [i for i,j in zip(play, feature) if j is f]
-        try:
-            h = [(p.count(i) / len(p)) * log(p.count(i) / len(p), 2) for i in set(play) if (p.count(i) / len(p)) > 0]
-        except:
-            pass
+        h = [(p.count(i) / len(p)) * log(p.count(i) / len(p), 2) for i in set(play) if (p.count(i) / len(p)) > 0]
         # print("Entropy of", "Weak" if f is 1 else "Strong", -sum(h))
         h_f.append(-sum(h))
     ig = root_h

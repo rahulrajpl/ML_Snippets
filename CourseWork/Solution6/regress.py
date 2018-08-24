@@ -8,20 +8,15 @@ X_test = np.load('Xtest.npy', encoding='latin1')
 Y_test = np.load('Ytest.npy', encoding='latin1')
 
 lambda_values = [0.01, 0.1, 1, 10, 20, 50, 100]
+
 # Calculating mean of each seen class
 mean_seen = np.asarray([np.mean(X_seen[i], axis=0) for i in range(40)])
-# print(mean_seen.shape)
-# print(As.shape)
+
+# Using the closed form solution for finding W for all values of lambda
 t1 = np.asarray([np.add(np.dot(As.transpose(), As), l * np.identity(85)) for l in lambda_values])
 t2 = np.dot(As.transpose(), mean_seen)
-# print(t1.shape)
-# print(t2.shape)
 W = np.asarray([np.dot(np.linalg.inv(t), t2) for t in t1])
-# print(w.shape)
-# print(Au.shape)
 mean_unseen = np.asarray([np.dot(Au, w) for w in W])
-# print(mean_unseen.shape)
-
 
 # Running Test Data and Predicting the class
 if __name__=='__main__':

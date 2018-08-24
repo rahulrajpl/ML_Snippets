@@ -31,14 +31,15 @@ mean_unseen = np.matmul(sim_vector_normalized, mean_seen)
 if __name__=='__main__':
 
     correct_prediction = 0 # for counting number of correct predictions
+    test_count = len(X_test)
 
-    for t in range(len(X_test)):
+    for t in range(test_count):
         dist = [np.linalg.norm(mean_unseen[i]-X_test[t]) for i in range(10)]
         p_class = 1+dist.index(min(dist))
         if p_class == int(Y_test[t]):
             correct_prediction += 1
 
-    print(correct_prediction, "correctly predicted", len(X_test))
-    print("Accuracy = ", round(correct_prediction/len(X_test) * 100,4), "%")
+    print(correct_prediction, "/", test_count, "correct,", end=' ')
+    print("Accuracy = ", round(correct_prediction / test_count * 100, 4), "%")
 
     exit()

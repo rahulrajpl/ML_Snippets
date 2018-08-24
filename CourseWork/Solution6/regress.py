@@ -32,7 +32,7 @@ if __name__=='__main__':
             if p_class == int(Y_test[t]):
                 correct_prediction += 1
 
-        print(correct_prediction, "correctly predicted", test_count)
+        print(correct_prediction, "/", test_count, "correct,", end=' ')
         print("Accuracy = ", round(correct_prediction/test_count * 100,4), "% at Lambda =", next(lambda_values_iter))
 
     exit()

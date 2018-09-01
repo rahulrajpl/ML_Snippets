@@ -10,7 +10,7 @@ gdp_curr = pd.read_csv("./datagov/Economy/gross-domestic-product-gdp-current-pri
 sw_gdp_const = pd.read_csv("./datagov/Economy/state-wise-net-domestic-product-ndp-constant-price.csv")
 sw_gdp_curr = pd.read_csv("./datagov/Economy/state-wise-net-domestic-product-ndp-current-price.csv")
 # dor = pd.read_csv("./datagov/Education/drop-out-rate.csv")
-# ger_he = pd.read_csv("./datagov/Education/gross-enrolment-ratio-higher-education.csv")
+ger_he = pd.read_csv("./datagov/Education/gross-enrolment-ratio-higher-education.csv")
 # ger_schools = pd.read_csv("./datagov/Education/gross-enrolment-ratio-schools.csv")
 # lit_rate = pd.read_csv("./datagov/Education/literacy-rate-7-years.csv")
 # per_boys_toilet = pd.read_csv("./datagov/Education/percentage-schools-boys-toilet.csv")
@@ -24,6 +24,8 @@ gdp_const.drop(index=11, inplace=True)
 gdp_curr.drop(columns=['Items  Description'], inplace = True, axis=1)
 sw_gdp_const.drop(columns=['Item Description'], inplace = True)
 sw_gdp_const.drop(index=11, inplace=True)
+sw_gdp_curr.drop(columns=['Item Description'], inplace = True)
+sw_gdp_curr.drop(index=11, inplace=True)
 
 # Correcting State names in dataframes
 gdp_const = gdp_const.rename(columns={'Andhra Pradesh ': 'Andhra Pradesh',
@@ -37,6 +39,11 @@ gdp_curr = gdp_curr.rename(columns={'Andhra Pradesh ': 'Andhra Pradesh',
                        'Delhi': 'NCT of Delhi'
                        })
 sw_gdp_const =sw_gdp_const.rename(columns={'Andhra Pradesh ': 'Andhra Pradesh',
+                        'West Bengal1': 'West Bengal',
+                       'Andaman & Nicobar Islands': 'A & N Islands',
+                       'Delhi': 'NCT of Delhi'
+                       })
+sw_gdp_curr =sw_gdp_curr.rename(columns={'Andhra Pradesh ': 'Andhra Pradesh',
                         'West Bengal1': 'West Bengal',
                        'Andaman & Nicobar Islands': 'A & N Islands',
                        'Delhi': 'NCT of Delhi'
@@ -74,7 +81,7 @@ gdp_const.to_csv("./output/Economy/gross-domestic-product-gdp-current-price.csv"
 print("GDP_curr cleaned and saved to output folder")
 
 #---------
-# Cleaning sq_gdp Start
+# Cleaning sw_gdp_const Start
 for reg in dr.groups.keys():
     states = [i for i in dr.get_group(reg)['States and Union Territories'] if i in sw_gdp_const.columns]
     rwise_states.append(states)
@@ -84,6 +91,18 @@ for rstate in rwise_states:
 sw_gdp_const.to_csv("./output/Economy/state-wise-net-domestic-product-ndp-constant-price.csv")
 print("sw_gdp_const cleaned and saved to output folder")
 #---------
+# Cleaning sw_gdp_curr Start
+for reg in dr.groups.keys():
+    states = [i for i in dr.get_group(reg)['States and Union Territories'] if i in sw_gdp_curr.columns]
+    rwise_states.append(states)
+# Calculating the mean of nan region wise.
+for rstate in rwise_states:
+    sw_gdp_curr[rstate] = sw_gdp_curr[rstate].apply(lambda row: row.fillna(row.mean()), axis=1)
+sw_gdp_curr.fillna(method='ffill', inplace=True)
+sw_gdp_curr.to_csv("./output/Economy/state-wise-net-domestic-product-ndp-current-price.csv")
+print("sw_gdp_curr cleaned and saved to output folder")
+#-----------
+
 
 
 

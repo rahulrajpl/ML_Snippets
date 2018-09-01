@@ -4,3 +4,7 @@ import numpy
 data = read_csv('movie_metadata.csv', header=None)
 
 print(data.head())
+
+print("Shape is ", data.shape)
+
+print(data)

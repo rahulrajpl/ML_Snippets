@@ -49,7 +49,6 @@ sw_gdp_curr =sw_gdp_curr.rename(columns={'Andhra Pradesh ': 'Andhra Pradesh',
                        'Delhi': 'NCT of Delhi'
                        })
 
-rwise = r.groupby('Region')['States and Union Territories'].apply(list).to_dict()
 # Grouping the States in the GDP Dataframe
 rwise_states = []
 dr = r.groupby('Region')
@@ -79,8 +78,8 @@ for rstate in rwise_states:
 gdp_curr.fillna(method='ffill', inplace=True)
 gdp_const.to_csv("./output/Economy/gross-domestic-product-gdp-current-price.csv")
 print("GDP_curr cleaned and saved to output folder")
-
 #---------
+
 # Cleaning sw_gdp_const Start
 for reg in dr.groups.keys():
     states = [i for i in dr.get_group(reg)['States and Union Territories'] if i in sw_gdp_const.columns]
@@ -91,6 +90,7 @@ for rstate in rwise_states:
 sw_gdp_const.to_csv("./output/Economy/state-wise-net-domestic-product-ndp-constant-price.csv")
 print("sw_gdp_const cleaned and saved to output folder")
 #---------
+
 # Cleaning sw_gdp_curr Start
 for reg in dr.groups.keys():
     states = [i for i in dr.get_group(reg)['States and Union Territories'] if i in sw_gdp_curr.columns]
@@ -103,7 +103,45 @@ sw_gdp_curr.to_csv("./output/Economy/state-wise-net-domestic-product-ndp-current
 print("sw_gdp_curr cleaned and saved to output folder")
 #-----------
 
+# Cleaning ger_he Start
+ger_he.set_index('Year', inplace=True)
+gerIndex = set(list(ger_he.index))
+gerdf = []
+for gI in gerIndex:
+    gerdf.append(ger_he.T[gI].T)
 
+new_gerdf = []
+y = {1: '2011', 2: '2012', 3: '2013', 4: '2014', 5: '2015', 0: '2016'}
+for i in range(len(gerdf)):
+    ger_temp = gerdf[i].reset_index()
+    ger_temp.drop(columns='Year', inplace=True)
+    ger_temp.set_index('Country/ State/ UT Name', inplace=True)
+    ger_temp = ger_temp.T
+    ger_temp = ger_temp.rename(columns={'Chhatisgarh': 'Chhattisgarh',
+                                        'Jammu and Kashmir': 'Jammu & Kashmir',
+                                        'Uttrakhand': 'Uttarakhand',
+                                        'Dadra & Nagar Haveli': 'D & N Haveli',
+                                        'Andaman & Nicobar Islands': 'A & N Islands',
+                                        'Delhi': 'NCT of Delhi'
+                                        })
+    for col in list(r['States and Union Territories']):
+        if col not in ger_temp.columns:
+            ger_temp[col] = 0
+    rwise_states = []
+
+    for reg in dr.groups.keys():
+        states = [i for i in dr.get_group(reg)['States and Union Territories'] if i in ger_temp.columns]
+        rwise_states.append(states)
+
+    for rstate in rwise_states:
+        ger_temp[rstate] = ger_temp[rstate].apply(lambda row: row.fillna(row.mean()), axis=1)
+    ger_temp = ger_temp.T
+    ger_temp['Year'] = y[i]
+    new_gerdf.append(ger_temp)
+final_gerdf = pd.concat([new_gerdf[1],new_gerdf[2],new_gerdf[3],new_gerdf[4],new_gerdf[5],new_gerdf[0]])
+final_gerdf.to_csv("./output/Education/gross-enrolment-ratio-higher-education.csv")
+print("ger_he cleaned and saved to output folder")
+#-----------
 
 
 exit()

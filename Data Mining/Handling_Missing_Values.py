@@ -49,9 +49,10 @@ sw_gdp_curr =sw_gdp_curr.rename(columns={'Andhra Pradesh ': 'Andhra Pradesh',
                        'Delhi': 'NCT of Delhi'
                        })
 
+dr = r.groupby('Region')
+
 # Grouping the States in the GDP Dataframe
 rwise_states = []
-dr = r.groupby('Region')
 for reg in dr.groups.keys():
     states = [i for i in dr.get_group(reg)['States and Union Territories'] if i in gdp_const.columns]
     rwise_states.append(states)
@@ -67,6 +68,7 @@ print("GDP_const cleaned and saved to output folder")
 
 #---------
 #Cleaning gdp_curr Start
+rwise_states = []
 for reg in dr.groups.keys():
     states = [i for i in dr.get_group(reg)['States and Union Territories'] if i in gdp_curr.columns]
     rwise_states.append(states)
@@ -81,6 +83,7 @@ print("GDP_curr cleaned and saved to output folder")
 #---------
 
 # Cleaning sw_gdp_const Start
+rwise_states = []
 for reg in dr.groups.keys():
     states = [i for i in dr.get_group(reg)['States and Union Territories'] if i in sw_gdp_const.columns]
     rwise_states.append(states)
@@ -92,6 +95,7 @@ print("sw_gdp_const cleaned and saved to output folder")
 #---------
 
 # Cleaning sw_gdp_curr Start
+rwise_states = []
 for reg in dr.groups.keys():
     states = [i for i in dr.get_group(reg)['States and Union Territories'] if i in sw_gdp_curr.columns]
     rwise_states.append(states)
@@ -104,6 +108,7 @@ print("sw_gdp_curr cleaned and saved to output folder")
 #-----------
 
 # Cleaning ger_he Start
+rwise_states = []
 ger_he.set_index('Year', inplace=True)
 gerIndex = set(list(ger_he.index))
 gerdf = []
@@ -111,7 +116,9 @@ for gI in gerIndex:
     gerdf.append(ger_he.T[gI].T)
 
 new_gerdf = []
-y = {1: '2011', 2: '2012', 3: '2013', 4: '2014', 5: '2015', 0: '2016'}
+y = {0: '2011', 1: '2012', 2: '2013', 3: '2014', 4: '2015', 5: '2016'}
+# y = ['2016', '2011', '2012', '2013', '2014', '2015']
+
 for i in range(len(gerdf)):
     ger_temp = gerdf[i].reset_index()
     ger_temp.drop(columns='Year', inplace=True)
@@ -124,9 +131,9 @@ for i in range(len(gerdf)):
                                         'Andaman & Nicobar Islands': 'A & N Islands',
                                         'Delhi': 'NCT of Delhi'
                                         })
-    for col in list(r['States and Union Territories']):
-        if col not in ger_temp.columns:
-            ger_temp[col] = 0
+    # for col in list(r['States and Union Territories']):
+    #     if col not in ger_temp.columns:
+    #         ger_temp[col] = 0
     rwise_states = []
 
     for reg in dr.groups.keys():

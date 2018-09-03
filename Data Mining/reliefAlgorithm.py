@@ -34,6 +34,11 @@ def Top_two_features(dataframe):
     f2 = scores.index(max(sorted(scores)[:-1]))
     return (f1, f2)
 
+def normalise(dataframe):
+    df = dataframe
+    min_max_scaler = preprocessing.MinMaxScaler()
+    np_scaled = min_max_scaler.fit_transform(df)
+    return pd.DataFrame(np_scaled)
 
 gdp_const_orig = pd.read_csv("./datagov/Economy/gross-domestic-product-gdp-constant-price.csv", nrows=1)
 gdp_curr_orig = pd.read_csv("./datagov/Economy/gross-domestic-product-gdp-current-price.csv", nrows=1)
@@ -51,9 +56,25 @@ features = list(gdp_const_orig['Items Description'])+ list(gdp_curr_orig['Items 
 df = pd.concat([gdp_const, gdp_curr,sw_gdp_const, sw_gdp_curr], sort=False)
 df.drop(columns='Duration', inplace=True)
 
-min_max_scaler = preprocessing.MinMaxScaler()
-np_scaled = min_max_scaler.fit_transform(df)
-df_normalized = pd.DataFrame(np_scaled)
+df_normalized = normalise(df)
+
 d = df_normalized.T
 f = Top_two_features(d)
 print("Most Important Feature in Economy category are:", features[f[0]], 'and ', features[f[1]])
+
+# Doing for Demography
+csr = pd.read_csv("./datagov/Demography/child-sex-ratio-0-6-years.csv")
+dgr = pd.read_csv("./datagov/Demography/decadal-growth-rate.csv")
+sr = pd.read_csv("./datagov/Demography/sex-ratio.csv")
+for d in [csr,dgr,sr]:
+    d.drop(columns='Category', inplace=True)
+temp = pd.merge(csr,dgr,how='outer', on='Country/ States/ Union Territories Name')
+df = pd.merge(temp,sr, how='outer', on='Country/ States/ Union Territories Name')
+features = list(df.columns)[1:]
+df.set_index('Country/ States/ Union Territories Name', inplace=True)
+df = normalise(df)
+f = Top_two_features(df)
+print("Most Important Feature in Demography category are:", features[f[0]], 'and ', features[f[1]])
+
+# Doing for Education
+

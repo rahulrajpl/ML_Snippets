@@ -20,19 +20,29 @@ def Top_two_features(dataframe):
         s = 0
         # Finding Nearmiss value
         for i in d[d.columns[x]]:
-            nmiss.append(min(sorted([np.linalg.norm(i - j) for j in d.iloc[x]])[1:]))
+            #             nmiss.append(min(sorted([np.linalg.norm(i-j) for j in d.iloc[x]])[1:]))
+            t = [np.linalg.norm(i - j) for j in d.iloc[x]]
+            t.sort()
+            nmiss.append(min(t[1:]))
+        #         print('Length of nmiss', len(nmiss))
         # Finding NearHit value
         for k in d[d.columns[x]]:
-            nhit.append(min(sorted([np.linalg.norm(k - l) for l in d[d.columns[x]]])[1:]))
+            t = [np.linalg.norm(k - l) for l in d[d.columns[x]]]
+            t.sort()
+            nhit.append(min(t[1:]))
+        #         print('Length of nhit', len(nhit))
+        #       nhit.append(min(sorted([np.linalg.norm(k-l) for l in d[d.columns[x]]])[1:]))
         # Calculating the scores of the feature
-        for i in range(d.shape[0]):
+        for i in range(len(d[d.columns[x]])):
             s -= nhit[i] + nmiss[i]
         scores.append(s)
+    #     print(scores)
     # Feature with highest score is
     f1 = scores.index(max(sorted(scores)))
     # Feature with second highest score is
     f2 = scores.index(max(sorted(scores)[:-1]))
     return (f1, f2)
+
 
 def normalise(dataframe):
     df = dataframe
@@ -55,10 +65,10 @@ features = list(gdp_const_orig['Items Description'])+ list(gdp_curr_orig['Items 
 
 df = pd.concat([gdp_const, gdp_curr,sw_gdp_const, sw_gdp_curr], sort=False)
 df.drop(columns='Duration', inplace=True)
-
+df = df.T
 df_normalized = normalise(df)
 
-d = df_normalized.T
+d = df_normalized
 f = Top_two_features(d)
 print("Most Important Feature in Economy category are:", features[f[0]], 'and ', features[f[1]])
 

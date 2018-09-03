@@ -63,7 +63,7 @@ for rstate in rwise_states:
 # Last year's data of same state being filled as an estimate.
 gdp_const.fillna(method='ffill', inplace=True)
 # Saving final cleaned file to output folder
-gdp_const.to_csv("./output/Economy/gross-domestic-product-gdp-constant-price.csv")
+gdp_const.to_csv("./output/Economy/gross-domestic-product-gdp-constant-price.csv", index=False)
 print("GDP_const cleaned and saved to output folder")
 
 #---------
@@ -78,7 +78,7 @@ for rstate in rwise_states:
 # Those regional states where all values are NaN. Mean cannot be taken. So used ffill used.
 # Last year's data of same state being filled as an estimate.
 gdp_curr.fillna(method='ffill', inplace=True)
-gdp_const.to_csv("./output/Economy/gross-domestic-product-gdp-current-price.csv")
+gdp_const.to_csv("./output/Economy/gross-domestic-product-gdp-current-price.csv", index=False)
 print("GDP_curr cleaned and saved to output folder")
 #---------
 
@@ -90,7 +90,7 @@ for reg in dr.groups.keys():
 # Calculating the mean of nan region wise.
 for rstate in rwise_states:
     sw_gdp_const[rstate] = sw_gdp_const[rstate].apply(lambda row: row.fillna(row.mean()), axis=1)
-sw_gdp_const.to_csv("./output/Economy/state-wise-net-domestic-product-ndp-constant-price.csv")
+sw_gdp_const.to_csv("./output/Economy/state-wise-net-domestic-product-ndp-constant-price.csv", index=False)
 print("sw_gdp_const cleaned and saved to output folder")
 #---------
 
@@ -103,7 +103,7 @@ for reg in dr.groups.keys():
 for rstate in rwise_states:
     sw_gdp_curr[rstate] = sw_gdp_curr[rstate].apply(lambda row: row.fillna(row.mean()), axis=1)
 sw_gdp_curr.fillna(method='ffill', inplace=True)
-sw_gdp_curr.to_csv("./output/Economy/state-wise-net-domestic-product-ndp-current-price.csv")
+sw_gdp_curr.to_csv("./output/Economy/state-wise-net-domestic-product-ndp-current-price.csv", index=False)
 print("sw_gdp_curr cleaned and saved to output folder")
 #-----------
 
@@ -116,7 +116,7 @@ for gI in gerIndex:
     gerdf.append(ger_he.T[gI].T)
 
 new_gerdf = []
-y = {0: '2011', 1: '2012', 2: '2013', 3: '2014', 4: '2015', 5: '2016'}
+y = {0:'2010-11', 1:'2011-12', 2:'2012-13', 3:'2013-14', 4:'2014-15', 5:'2015-16'}
 # y = ['2016', '2011', '2012', '2013', '2014', '2015']
 
 for i in range(len(gerdf)):
@@ -146,7 +146,7 @@ for i in range(len(gerdf)):
     ger_temp['Year'] = y[i]
     new_gerdf.append(ger_temp)
 final_gerdf = pd.concat([new_gerdf[1],new_gerdf[2],new_gerdf[3],new_gerdf[4],new_gerdf[5],new_gerdf[0]])
-final_gerdf.to_csv("./output/Education/gross-enrolment-ratio-higher-education.csv")
+final_gerdf.to_csv("./output/Education/gross-enrolment-ratio-higher-education.csv",)
 print("ger_he cleaned and saved to output folder")
 #-----------
 

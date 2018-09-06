@@ -72,7 +72,9 @@ def merge_education():
         dor.reset_index(inplace=True)
         dor.rename(columns={'State_UT': 'States and Union Territories'}, inplace=True)
         dor = pd.merge(r, dor, how='outer', on='States and Union Territories')
-        # print(dor)
+        # print(dor.shape)
+        #         print(dor.columns)
+        return dor
 
     def cleanger_he():
         # Cleaning Gross Enrollment Rate _High Education file.
@@ -80,15 +82,18 @@ def merge_education():
 
         ger_he.rename(columns={'Country/ State/ UT Name': 'States and Union Territories'}, inplace=True)
         ger_he.set_index('States and Union Territories', inplace=True)
-        ger_he.rename(index={'Chhatisgarh': 'Chhattisgarh','Jammu and Kashmir': 'Jammu & Kashmir',
-                             'Uttrakhand': 'Uttarakhand','Dadra & Nagar Haveli': 'D & N Haveli',
-                             'Andaman & Nicobar Islands': 'A & N Islands','Delhi': 'NCT of Delhi',
+        ger_he.rename(index={'Chhatisgarh': 'Chhattisgarh', 'Jammu and Kashmir': 'Jammu & Kashmir',
+                             'Uttrakhand': 'Uttarakhand', 'Dadra & Nagar Haveli': 'D & N Haveli',
+                             'Andaman & Nicobar Islands': 'A & N Islands', 'Delhi': 'NCT of Delhi',
                              'All India': 'INDIA'}, inplace=True)
         ger_he.reset_index(inplace=True)
         ger_he = ger_he.pivot(index='States and Union Territories', columns='Year')
         ger_he.columns = [' '.join(col).strip() for col in ger_he.columns.values]
-        ger_he = pd.merge(r, ger_he, how='outer', on='States and Union Territories')
-        # print(ger_he.columns)
+        ger_he = pd.merge(pd.DataFrame(r['States and Union Territories']), ger_he, how='outer',
+                          on='States and Union Territories')
+        # print(ger_he.shape)
+        #         print(ger_he.columns)
+        return ger_he
 
     def cleanger_schools():
         # Cleaning Gross Enrollment Rate School file.
@@ -103,15 +108,20 @@ def merge_education():
         ger_schools.reset_index(inplace=True)
         ger_schools = ger_schools.pivot(index='States and Union Territories', columns='Year')
         ger_schools.columns = [' '.join(col).strip() for col in ger_schools.columns.values]
-        # print(ger_schools)
+        ger_schools = pd.merge(pd.DataFrame(r['States and Union Territories']), ger_schools, how='outer',
+                               on='States and Union Territories')
+        #         print(ger_schools.columns)
+        return ger_schools
 
     def cleanlit():
         lit_rate = pd.read_csv("./datagov/Education/literacy-rate-7-years.csv")
         lit_rate.drop(columns='Category', inplace=True)
         lit_rate.rename(columns={"Country/ States/ Union Territories Name": "States and Union Territories"},
                         inplace=True)
-        lit_rate = pd.merge(r, lit_rate, how='outer', on='States and Union Territories')
-        print(lit_rate)
+        lit_rate = pd.merge(pd.DataFrame(r['States and Union Territories']), lit_rate, how='outer',
+                            on='States and Union Territories')
+        # print(lit_rate.shape)
+        return lit_rate
 
     def cleanper_boys_toilet():
         per_boys_toilet = pd.read_csv("./datagov/Education/percentage-schools-boys-toilet.csv")
@@ -125,8 +135,10 @@ def merge_education():
             index={'Jammu And Kashmir': 'Jammu & Kashmir', 'Andaman & Nicobar Islands': 'A & N Islands',
                    'Dadra & Nagar Haveli': 'D & N Haveli', 'Delhi': 'NCT of Delhi',
                    'All India': 'INDIA'}, inplace=True)
-        per_boys_toilet = pd.merge(r, per_boys_toilet, how='outer', on='States and Union Territories')
-        # print(per_boys_toilet)
+        per_boys_toilet = pd.merge(pd.DataFrame(r['States and Union Territories']), per_boys_toilet, how='outer',
+                                   on='States and Union Territories')
+        # print(per_boys_toilet.shape)
+        return per_boys_toilet
 
     def cleanper_girls_toilet():
         per_girls_toilet = pd.read_csv("./datagov/Education/percentage-schools-girls-toilet.csv")
@@ -137,8 +149,10 @@ def merge_education():
             index={'Jammu And Kashmir': 'Jammu & Kashmir', 'Andaman & Nicobar Islands': 'A & N Islands',
                    'Dadra & Nagar Haveli': 'D & N Haveli', 'Delhi': 'NCT of Delhi',
                    'All India': 'INDIA'}, inplace=True)
-        per_girls_toilet = pd.merge(r, per_girls_toilet, how='outer', on='States and Union Territories')
-        # print(per_girls_toilet)
+        per_girls_toilet = pd.merge(pd.DataFrame(r['States and Union Territories']), per_girls_toilet, how='outer',
+                                    on='States and Union Territories')
+        # print(per_girls_toilet.shape)
+        return per_girls_toilet
 
     def cleanper_comps():
         per_comps = pd.read_csv("./datagov/Education/percentage-schools-computers.csv")
@@ -149,28 +163,54 @@ def merge_education():
             index={'Jammu And Kashmir': 'Jammu & Kashmir', 'Andaman & Nicobar Islands': 'A & N Islands',
                    'Dadra & Nagar Haveli': 'D & N Haveli', 'Delhi': 'NCT of Delhi',
                    'All India': 'INDIA'}, inplace=True)
-        per_comps = pd.merge(r, per_comps, how='outer', on='States and Union Territories')
-        print(per_comps)
+        per_comps = pd.merge(pd.DataFrame(r['States and Union Territories']), per_comps, how='outer',
+                             on='States and Union Territories')
+        # print(per_comps.shape)
+        return per_comps
+
+    def cleanper_electricity():
+        per_electricity = pd.read_csv("./datagov/Education/percentage-schools-electricity.csv")
+        per_electricity.rename(columns={'State_UT': 'States and Union Territories'}, inplace=True)
+        per_electricity = per_electricity.pivot(index='States and Union Territories', columns='year')
+        per_electricity.columns = [' '.join(col).strip() for col in per_electricity.columns.values]
+        per_electricity.rename(
+            index={'Jammu And Kashmir': 'Jammu & Kashmir', 'Andaman & Nicobar Islands': 'A & N Islands',
+                   'Dadra & Nagar Haveli': 'D & N Haveli', 'Delhi': 'NCT of Delhi',
+                   'All India': 'INDIA'}, inplace=True)
+        per_electricity = pd.merge(pd.DataFrame(r['States and Union Territories']), per_electricity, how='outer',
+                                   on='States and Union Territories')
+        # print(per_electricity.shape)
+        return per_electricity
 
     def cleanper_drinking():
         per_drinking = pd.read_csv("./datagov/Education/percentage-schools-drinking-water.csv")
-        per_electricity = pd.read_csv("./datagov/Education/percentage-schools-electricity.csv")
-        per_electricity.rename(columns={'State_UT': 'States and Union Territories'}, inplace=True)
+        per_drinking.rename(columns={'State/UT': 'States and Union Territories'}, inplace=True)
+        per_drinking = per_drinking.pivot(index='States and Union Territories', columns='Year')
+        per_drinking.columns = [' '.join(col).strip() for col in per_drinking.columns.values]
+        per_drinking.rename(
+            index={'Jammu And Kashmir': 'Jammu & Kashmir', 'Andaman & Nicobar Islands': 'A & N Islands',
+                   'Dadra & Nagar Haveli': 'D & N Haveli', 'Delhi': 'NCT of Delhi',
+                   'All India': 'INDIA'}, inplace=True)
+        per_drinking = pd.merge(pd.DataFrame(r['States and Union Territories']), per_drinking, how='outer',
+                                on='States and Union Territories')
+        #         print(per_drinking.columns)
+        return per_drinking
 
+    df_education = pd.merge(cleandor(), cleanger_he(), how='outer', on='States and Union Territories')
+    df_education = pd.merge(df_education, cleanger_schools(), how='outer', on='States and Union Territories')
+    df_education = pd.merge(df_education, cleanlit(), how='outer', on='States and Union Territories')
+    df_education = pd.merge(df_education, cleanper_boys_toilet(), how='outer', on='States and Union Territories')
+    df_education = pd.merge(df_education, cleanper_girls_toilet(), how='outer', on='States and Union Territories')
+    df_education = pd.merge(df_education, cleanper_comps(), how='outer', on='States and Union Territories')
+    df_education = pd.merge(df_education, cleanper_electricity(), how='outer', on='States and Union Territories')
+    df_education = pd.merge(df_education, cleanper_drinking(), how='outer', on='States and Union Territories')
+    df_education.iloc[:, 2:] = df_education.iloc[:, 2:].apply(pd.to_numeric, errors='coerce')
+    return df_education
 
-
-    # cleandor()
-    # cleanger_he()
-    # cleanger_schools()
-    # cleanlit()
-    # cleanper_boys_toilet()
-    # cleanper_girls_toilet()
-    # cleanper_comps()
-    cleanper_drinking()
 def main():
-   # merge_demography()
-   # merge_economy()
-   merge_education()
-
+    # merge_demography()
+    # merge_economy()
+    df_education = merge_education()
+    df_demo.at[36, 'Region'] = 'All'
 if __name__== '__main__':
     main()

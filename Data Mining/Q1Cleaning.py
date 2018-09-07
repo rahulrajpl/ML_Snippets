@@ -13,8 +13,8 @@ def merge_demography():
         'Country/ States/ Union Territories Name': 'States and Union Territories'
     }, inplace=True)
     df_demo = pd.merge(r, df_demo, how='outer', on='States and Union Territories')
-    df_demo.to_csv('./output/Demography/Demography.csv', index=None)
-    print('Merged Demography data saved to ./output/Demography/Demography.csv. Shape is', df_demo.shape)
+
+    return df_demo
 
 def merge_economy():
     gdp_const = pd.read_csv("./datagov/Economy/gross-domestic-product-gdp-constant-price.csv", nrows=11)
@@ -23,11 +23,11 @@ def merge_economy():
     sw_gdp_curr = pd.read_csv("./datagov/Economy/state-wise-net-domestic-product-ndp-current-price.csv", nrows=11)
     df_in_economy = [gdp_const, gdp_curr, sw_gdp_const, sw_gdp_curr]
     for df in df_in_economy:
-        df.rename(columns={'Andhra Pradesh ': 'Andhra Pradesh','West Bengal1': 'West Bengal',
-                           'Andaman & Nicobar Islands': 'A & N Islands','Delhi': 'NCT of Delhi',
-                           'All_India GDP': 'INDIA','All_India NDP': 'INDIA',
-                            'Item Description': 'Item','Items Description': 'Item',
-                            'Items  Description': 'Item'}, inplace=True)
+        df.rename(columns={'Andhra Pradesh ': 'Andhra Pradesh', 'West Bengal1': 'West Bengal',
+                           'Andaman & Nicobar Islands': 'A & N Islands', 'Delhi': 'NCT of Delhi',
+                           'All_India GDP': 'INDIA', 'All_India NDP': 'INDIA',
+                           'Item Description': 'Item', 'Items Description': 'Item',
+                           'Items  Description': 'Item'}, inplace=True)
     for df in df_in_economy:
         col1 = list(df['Item'])
         col2 = list(df['Duration'])
@@ -48,11 +48,12 @@ def merge_economy():
     df_economy.rename(columns={
         'States': 'States and Union Territories'
     }, inplace=True)
-    df_economy = pd.merge(df_economy, pd.DataFrame(r['States and Union Territories']), \
+    df_economy = pd.merge(r, df_economy, \
                           how='outer', on='States and Union Territories')
 
-    df_economy.to_csv('./output/Economy/Economy.csv', index=None)
-    print('Merged Economy data saved to /output/Economy/Economy.csvShape is', df_economy.shape)
+    # df_economy.to_csv('./output/Economy/Economy.csv', index=None)
+    # print('Merged Economy data saved to /output/Economy/Economy.csvShape is', df_economy.shape)
+    return df_economy
 
 def merge_education():
 
@@ -208,9 +209,45 @@ def merge_education():
     return df_education
 
 def main():
-    # merge_demography()
-    # merge_economy()
-    df_education = merge_education()
+    # cleaning Demography Data
+    df_demo = merge_demography()
     df_demo.at[36, 'Region'] = 'All'
+    df_demo[df_demo['States and Union Territories'] == 'Telangana'] = \
+        df_demo[df_demo['States and Union Territories'] == 'Telangana'].fillna(0)
+    df_demo.to_csv('./output/Demography/Demography.csv', index=None)
+    print('Cleaned Demography data saved to ./output/Demography/Demography.csv')
+
+    df_economy = merge_economy()
+    df_economy.iloc[-1:, 1:2] = 'All'
+    df_economy_group = df_economy.groupby('Region')
+    rwise_states = []
+    for reg in list(df_economy_group.groups):
+        rwise_states.append(list(df_economy_group.get_group(reg)['States and Union Territories']))
+    df_economy.drop(columns='Region', inplace=True)
+    df_economy = df_economy.set_index('States and Union Territories').T
+    for reg in rwise_states:
+        df_economy[reg] = df_economy[reg].apply(lambda row: row.fillna(row.mean()), axis=1)
+    df_economy = df_economy.fillna(method='ffill').T
+    # print(df_economy.shape)
+    df_economy.to_csv('./output/Economy/Economy.csv')
+    print('Cleaned Economy data saved to /output/Economy/Economy.csv')
+
+    df_education = merge_education()
+    df_education.iloc[-1:, 1:2] = 'All'
+    df_education_group = df_education.groupby('Region')
+    rwise_states = []
+    for reg in list(df_education_group.groups):
+        rwise_states.append(list(df_education_group.get_group(reg)['States and Union Territories']))
+    df_education.drop(columns='Region', inplace=True)
+    df_education = df_education.set_index('States and Union Territories').T
+    df_education.replace('NR', np.nan, inplace=True)
+    df_education.replace('@', np.nan, inplace=True)
+    for reg in rwise_states:
+        df_education[reg] = df_education[reg].apply(lambda row: row.fillna(row.mean()), axis=1)
+    # print(df_education.shape)
+    df_education = df_education.T
+    df_education.to_csv('./output/Education/Education.csv')
+    print('Cleaned Education data saved to ./output/Education/Education.csv')
+
 if __name__== '__main__':
     main()

@@ -66,47 +66,48 @@ def df_cleaning(df):
         rwise_states.append(states)
     return df, rwise_states, Allstates
 
-# Reading Cleaned data files in each category
-df_demog = pd.read_csv('./output/Demography/Demography.csv')
-df_economy= pd.read_csv('./output/Economy/Economy.csv')
-df_education = pd.read_csv('./output/Education/Education.csv')
-r = pd.read_csv("regions.csv")
+if __name__ == '__main__':
+    # Reading Cleaned data files in each category
+    df_demog = pd.read_csv('./output/Demography/Demography.csv')
+    df_economy= pd.read_csv('./output/Economy/Economy.csv')
+    df_education = pd.read_csv('./output/Education/Education.csv')
+    r = pd.read_csv("regions.csv")
 
-df_all = pd.merge(df_demog, df_economy, how='outer', on='States and Union Territories')
-df_all = pd.merge(df_all, df_education, how='outer', on='States and Union Territories')
+    df_all = pd.merge(df_demog, df_economy, how='outer', on='States and Union Territories')
+    df_all = pd.merge(df_all, df_education, how='outer', on='States and Union Territories')
 
-# Applying Relief Algorithm for Demography Category
-df, rwise_states, Allstates = df_cleaning(df_demog)
-f = relief_algorithm(df, rwise_states, Allstates)
-print('\nTop Two features in Demography category are  \n1.', f[0], '\n2.', f[1])
-d1 = pd.DataFrame(df.loc[f[0]])
-d2 = pd.merge(d1, pd.DataFrame(df.loc[f[1]]), how='outer', on='States and Union Territories')
-d2.to_csv('./output/Demography/Top2Feature.csv')
-print('Dataframe saved to ./output/Demography/Top2Feature.csv')
+    # Applying Relief Algorithm for Demography Category
+    df, rwise_states, Allstates = df_cleaning(df_demog)
+    f = relief_algorithm(df, rwise_states, Allstates)
+    print('\nTop Two features in Demography category are  \n1.', f[0], '\n2.', f[1])
+    d1 = pd.DataFrame(df.loc[f[0]])
+    d2 = pd.merge(d1, pd.DataFrame(df.loc[f[1]]), how='outer', on='States and Union Territories')
+    d2.to_csv('./output/Demography/Top2Feature.csv')
+    print('Dataframe saved to ./output/Demography/Top2Feature.csv')
 
-# Applying Relief Algorithm for Economy Category
-df, rwise_states, Allstates = df_cleaning(df_economy)
-f = relief_algorithm(df, rwise_states, Allstates)
-print('\nTop Two features in Economy category are  \n1.', f[0], '\n2.', f[1])
-d1 = pd.DataFrame(df.loc[f[0]])
-d2 = pd.merge(d1, pd.DataFrame(df.loc[f[1]]), how='outer', on='States and Union Territories')
-d2.to_csv('./output/Economy/Top2Feature.csv')
-print('Dataframe saved to ./output/Economy/Top2Feature.csv')
+    # Applying Relief Algorithm for Economy Category
+    df, rwise_states, Allstates = df_cleaning(df_economy)
+    f = relief_algorithm(df, rwise_states, Allstates)
+    print('\nTop Two features in Economy category are  \n1.', f[0], '\n2.', f[1])
+    d1 = pd.DataFrame(df.loc[f[0]])
+    d2 = pd.merge(d1, pd.DataFrame(df.loc[f[1]]), how='outer', on='States and Union Territories')
+    d2.to_csv('./output/Economy/Top2Feature.csv')
+    print('Dataframe saved to ./output/Economy/Top2Feature.csv')
 
-# Applying Relief Algorithm for Education Category
-df, rwise_states, Allstates = df_cleaning(df_education)
-f = relief_algorithm(df, rwise_states, Allstates)
-print('\nTop Two features in Education category are  \n1.', f[0], '\n2.', f[1])
-d1 = pd.DataFrame(df.loc[f[0]])
-d2 = pd.merge(d1, pd.DataFrame(df.loc[f[1]]), how='outer', on='States and Union Territories')
-d2.to_csv('./output/Education/Top2Feature.csv')
-print('Dataframe saved to ./output/Education/Top2Feature.csv')
+    # Applying Relief Algorithm for Education Category
+    df, rwise_states, Allstates = df_cleaning(df_education)
+    f = relief_algorithm(df, rwise_states, Allstates)
+    print('\nTop Two features in Education category are  \n1.', f[0], '\n2.', f[1])
+    d1 = pd.DataFrame(df.loc[f[0]])
+    d2 = pd.merge(d1, pd.DataFrame(df.loc[f[1]]), how='outer', on='States and Union Territories')
+    d2.to_csv('./output/Education/Top2Feature.csv')
+    print('Dataframe saved to ./output/Education/Top2Feature.csv')
 
-# Applying Relief Algorithm across category
-df, rwise_states, Allstates = df_cleaning(df_all)
-f = relief_algorithm(df, rwise_states, Allstates)
-print('\nTop Two features across category are  \n1.', f[0], '\n2.', f[1])
-d1 = pd.DataFrame(df.loc[f[0]])
-d2 = pd.merge(d1, pd.DataFrame(df.loc[f[1]]), how='outer', on='States and Union Territories')
-d2.to_csv('./output/Top2Feature_AllIndia.csv')
-print('Dataframe saved to ./output/Top2Feature_AllIndia.csv')
+    # Applying Relief Algorithm across category
+    df, rwise_states, Allstates = df_cleaning(df_all)
+    f = relief_algorithm(df, rwise_states, Allstates)
+    print('\nTop Two features across category are  \n1.', f[0], '\n2.', f[1])
+    d1 = pd.DataFrame(df.loc[f[0]])
+    d2 = pd.merge(d1, pd.DataFrame(df.loc[f[1]]), how='outer', on='States and Union Territories')
+    d2.to_csv('./output/Top2Feature_AllIndia.csv')
+    print('Dataframe saved to ./output/Top2Feature_AllIndia.csv')

@@ -1,5 +1,5 @@
 import pandas as pd
-import numpy as np
+from collections import OrderedDict
 
 # Reading Cleaned data files in each category
 df_demo = pd.read_csv('./output/Demography/Demography.csv')
@@ -20,5 +20,17 @@ print('Correlation across three categories is saved to ./output/AllIndia_correla
 
 
 print("Inference:")
-print("It is seen from above correlations that the features which are having correlation value close to 1 or -1 are\
-    redundant. Thus we can ignore one of these feature as part of feature reduction.")
+print("Correlation table will describe the relationship between different features of the states and \
+derive new association rules between them. Moreover, highly correlated features are considered redundant and can\
+be reduced.")
+print()
+print('Top 10 Correlated features are as follows')
+cdf = df[df.columns[2:]].corr()
+d = {}
+for c_value, feature in zip(cdf.iloc[0], cdf.columns):
+    d[c_value] = feature
+d = OrderedDict(sorted(d.items(), reverse=True))
+
+# Printing Top 10 features which are almost redundant
+for key in list(d.keys())[1:10]:
+    print('Corr_Value', key, '\t\tfeature',d[key] )

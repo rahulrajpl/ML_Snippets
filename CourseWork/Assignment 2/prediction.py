@@ -22,7 +22,7 @@ target = np.array(target)
 
 X_train, X_test, y_train, y_test = train_test_split(d, target, test_size = .3, random_state = 0,stratify=target)
 
-depth = 5
+depth = 6
 dtree_model = DecisionTreeClassifier(max_depth=depth).fit(X_train, y_train)
 dtree_predictions = dtree_model.predict(X_test)
 # cm = confusion_matrix(y_test, dtree_predictions)

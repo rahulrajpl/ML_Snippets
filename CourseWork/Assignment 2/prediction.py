@@ -1,3 +1,13 @@
+"""prediction.py - Implementation of Decision Tree Classifier."""
+
+__author__ = "Rahul Raj"
+__license__ = "GPL"
+__version__ = "1.0.0"
+__maintainer__ = "Be one. Get in touch through email>"
+__email__ = "rahulr@iitk.ac.in"
+__status__ = "Development"
+
+
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report, accuracy_score
 from sklearn.tree import DecisionTreeClassifier
@@ -63,7 +73,5 @@ r5 = pd.read_csv('./data_class_5.csv')
 t = np.array(r5.iloc[:,:3])
 print(list(dtree_model.predict(t)),'<-Predicted classes -')
 print(list(r5['class']),'<-Actual classes -')
-
-
 
 print('end')
